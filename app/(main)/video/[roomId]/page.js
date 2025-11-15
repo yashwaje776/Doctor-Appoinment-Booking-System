@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState,use } from "react";
 import Peer from "peerjs";
 
 // Avatar Placeholder Component
@@ -16,7 +16,7 @@ function AvatarPlaceholder({ name }) {
 
 export default function VideoPage({ params }) {
   // IMPORTANT: FIXED — do NOT use "use(params)"
-  const { roomId } = params;
+  const { roomId } =use(params);
 
   const [peerId, setPeerId] = useState("");
 
