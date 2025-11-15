@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Check, X, ExternalLink, Medal, FileText, User } from "lucide-react";
 import { format } from "date-fns";
 import { BarLoader } from "react-spinners";
@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { updateVerification } from "@/actions/admin";
+
+import { toast } from "sonner";
 
 export default function PendingDoctorsClient({ doctors }) {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -42,7 +44,14 @@ export default function PendingDoctorsClient({ doctors }) {
     setLoading(false);
 
     if (result?.success) {
+      toast.success(
+        status === "VERIFIED"
+          ? "Doctor approved successfully!"
+          : "Doctor rejected."
+      );
       handleClose();
+    } else {
+      toast.error(result?.message || "Failed to update status.");
     }
   };
 
@@ -52,7 +61,7 @@ export default function PendingDoctorsClient({ doctors }) {
         {doctors.map((doc) => (
           <Card
             key={doc._id}
-            className="bg-background border-emerald-900/20  hover:border-emerald-700/30 transition-all"
+            className="bg-background border-emerald-900/20 hover:border-emerald-700/30 transition-all"
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -113,7 +122,9 @@ export default function PendingDoctorsClient({ doctors }) {
 
                 <div>
                   <h4 className="text-sm text-muted-foreground">Email</h4>
-                  <p className="text-white">{selectedDoctor.user?.email}</p>
+                  <p className="text-white">
+                    {selectedDoctor.user?.email}
+                  </p>
                 </div>
 
                 <div>
@@ -124,7 +135,7 @@ export default function PendingDoctorsClient({ doctors }) {
                 </div>
               </div>
 
-              <Separator className="" />
+              <Separator />
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -139,7 +150,9 @@ export default function PendingDoctorsClient({ doctors }) {
                     <h4 className="text-sm text-muted-foreground">
                       Speciality
                     </h4>
-                    <p className="text-white">{selectedDoctor.speciality}</p>
+                    <p className="text-white">
+                      {selectedDoctor.speciality}
+                    </p>
                   </div>
 
                   <div>
@@ -160,11 +173,15 @@ export default function PendingDoctorsClient({ doctors }) {
                       target="_blank"
                       className="text-emerald-400 flex items-center"
                     >
-                      View Credentials <ExternalLink className="h-4 w-4 ml-1" />
+                      View Credentials{" "}
+                      <ExternalLink className="h-4 w-4 ml-1" />
                     </a>
                   </div>
+
                   <div>
-                    <h4 className="text-sm text-muted-foreground">Fees</h4>
+                    <h4 className="text-sm text-muted-foreground">
+                      Fees
+                    </h4>
                     <p>₹ {selectedDoctor.fees} per consultation</p>
                   </div>
                 </div>
@@ -185,7 +202,7 @@ export default function PendingDoctorsClient({ doctors }) {
               </div>
             </div>
 
-            {loading && <BarLoader width="100%" color="#36d7b7" />}
+            {loading && <BarLoader width="100%" />}
 
             <DialogFooter className="flex justify-between">
               <Button

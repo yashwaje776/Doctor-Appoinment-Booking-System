@@ -58,7 +58,7 @@ export async function getCompletedAppointments() {
     doctorId: user.doctor._id,
     status: "completed",
   })
-    .populate("patient")
+    .populate("patientId")
     .lean();
 }
 export async function getDoctorDashboardStats() {

@@ -186,7 +186,7 @@ export default function TimeSelector({ docInfo, user }) {
                         : "hover:border-emerald-700/40"
                     }`}
                   >
-                    <CardContent className="p-3 flex items-center">
+                    <CardContent className="p-2 flex items-center">
                       <Clock className="h-4 w-4 mr-2" />
                       <span>{format(new Date(slot.startTime), "h:mm a")}</span>
                     </CardContent>

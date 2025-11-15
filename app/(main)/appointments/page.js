@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { createPayment, verifyPayment } from "@/actions/payment";
 import { markPaymentPaid } from "@/actions/appointment";
+import ViewDetailsModal from "./_components/ViewDetailsModal";
 
 export default function MyAppointmentsPage() {
   const [filter, setFilter] = useState("upcoming");
@@ -150,8 +151,9 @@ export default function MyAppointmentsPage() {
                   <b>Amount:</b> ₹{app.amount}
                 </p>
               </div>
-
+               
               <div className="flex gap-3">
+               <ViewDetailsModal appointment={app} />
                 {(app.status === "pending" || app.status === "confirmed") && (
                   <button
                     onClick={() => handleCancel(app._id)}

@@ -58,3 +58,5 @@ export async function getDoctorById(speciality, id) {
     throw new Error(error.message || "Failed to fetch doctor");
   }
 }
+
+
