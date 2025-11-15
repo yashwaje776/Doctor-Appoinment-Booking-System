@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, use } from "react";
+import { useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
 
 // Avatar Placeholder Component
@@ -15,7 +15,9 @@ function AvatarPlaceholder({ name }) {
 }
 
 export default function VideoPage({ params }) {
-  const { roomId } = use(params);
+  // IMPORTANT: FIXED — do NOT use "use(params)"
+  const { roomId } = params;
+
   const [peerId, setPeerId] = useState("");
 
   const localVideo = useRef(null);
@@ -28,15 +30,20 @@ export default function VideoPage({ params }) {
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [remoteCameraOff, setRemoteCameraOff] = useState(true);
 
+  // Initialize PeerJS
   useEffect(() => {
     const peer = new Peer();
     peerInstance.current = peer;
 
     peer.on("open", (id) => {
+      console.log("My peer ID:", id);
       setPeerId(id);
     });
 
+    // When someone calls YOU
     peer.on("call", async (call) => {
+      console.log("Incoming call from:", call.peer);
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
@@ -45,23 +52,27 @@ export default function VideoPage({ params }) {
       localStreamRef.current = stream;
       localVideo.current.srcObject = stream;
 
-      call.answer(stream);
+      call.answer(stream); // send your video
 
       call.on("stream", (remoteStream) => {
+        console.log("Remote stream received");
         remoteVideo.current.srcObject = remoteStream;
 
-        // Detect if remote camera is off
         const videoTrack = remoteStream.getVideoTracks()[0];
         setRemoteCameraOff(!videoTrack?.enabled);
-      });
-
-      call.on("close", () => {
-        remoteVideo.current.srcObject = null;
       });
     });
   }, []);
 
+  // When YOU start the call
   const startCall = async () => {
+    if (!roomId) {
+      alert("Room ID is missing");
+      return;
+    }
+
+    console.log("Calling peer:", roomId);
+
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
@@ -73,6 +84,7 @@ export default function VideoPage({ params }) {
     const call = peerInstance.current.call(roomId, stream);
 
     call.on("stream", (remoteStream) => {
+      console.log("Remote stream received");
       remoteVideo.current.srcObject = remoteStream;
 
       const videoTrack = remoteStream.getVideoTracks()[0];
@@ -111,7 +123,6 @@ export default function VideoPage({ params }) {
     <div className="min-h-screen bg-muted/20 flex justify-center items-center p-6">
       <div className="w-full max-w-6xl rounded-2xl p-8 border border-border bg-background/40 backdrop-blur-xl shadow-xl">
 
-        {/* Header */}
         <h1 className="text-3xl font-bold text-center text-foreground">
           Consultation Meeting
         </h1>
@@ -124,7 +135,6 @@ export default function VideoPage({ params }) {
           Your Peer ID: <strong>{peerId}</strong>
         </p>
 
-        {/* Join Button */}
         <div className="flex justify-center mt-5">
           <button
             onClick={startCall}
@@ -134,13 +144,13 @@ export default function VideoPage({ params }) {
           </button>
         </div>
 
-        {/* Video Area */}
+        {/* VIDEO AREA */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
 
           {/* Local Video */}
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Your Video
+              You
             </h3>
 
             {isCameraOff ? (
@@ -176,7 +186,7 @@ export default function VideoPage({ params }) {
 
         </div>
 
-        {/* Control Bar */}
+        {/* CONTROL BAR */}
         <div className="flex justify-center gap-4 mt-10">
 
           <button
