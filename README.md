@@ -10,7 +10,7 @@ It allows patients to book appointments, doctors to manage consultations, and ad
 ## 🌐 Live Demo
 
 🔗 **Live Site:**  
-👉 [doctor-appoinment-booking-system.vercel.app](https://doctor-appoinment-booking-system.vercel.app/)
+👉 [https://doctor-appoinment-booking-system-f9.vercel.app/](https://doctor-appoinment-booking-system-f9.vercel.app/)
 
 
 ---
@@ -86,17 +86,14 @@ BookMyDoc uses **Razorpay Payment Gateway** to securely collect consultation fee
 ## 📸 Screenshots
 
 ### 🏠 Home Page
-![Home Page](./public/home.png)
+![Home Page](./public/home.jpg)
 
 ### 👨‍⚕️ Doctor Dashboard
-![Doctor Dashboard](./public/doctor-dashboard.png)
+![Doctor Dashboard](./public/doc.jpg)
 
-### 👤 Patient Dashboard
-![Patient Dashboard](./public/patient-dashboard.png)
+### 👤 Appointment Dashboard
+![Patient Dashboard](./public/metting.jpg)
 
 ### 🛠️ Admin Panel
-![Admin Panel](./public/admin-panel.png)
-
-### 💳 Razorpay Payment Page
-![Payment Page](./public/payment.png)
+![Admin Panel](./public/admin.jppg)
 
