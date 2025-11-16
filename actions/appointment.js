@@ -137,12 +137,10 @@ export async function markPaymentPaid({
 
 // ==================================================
 // GENERATE VIDEO TOKEN
-// ==================================================
 export async function generateVideoToken(formData) {
   const { userId } = await auth();
 
   if (!userId) {
-    console.error("Unauthorized token access attempt");
     throw new Error("Unauthorized");
   }
 
@@ -150,50 +148,26 @@ export async function generateVideoToken(formData) {
     await connectDB();
 
     const user = await User.findOne({ clerkUserId: userId }).populate("doctor");
-
-    if (!user) {
-      throw new Error("User not found");
-    }
+    if (!user) throw new Error("User not found");
 
     const appointmentId = formData.get("appointmentId");
-    if (!appointmentId) {
-      throw new Error("Appointment ID is required");
-    }
+    if (!appointmentId) throw new Error("Appointment ID is required");
 
     const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) throw new Error("Appointment not found");
 
-    if (!appointment) {
-      throw new Error("Appointment not found");
-    }
-
-    // Authorization check
+    // Check if user is doctor or patient of this appointment
     if (
       appointment.doctorId.toString() !== user.doctor?._id.toString() &&
       appointment.patientId.toString() !== user._id.toString()
     ) {
-      console.error("Unauthorized video access. User:", user._id);
       throw new Error("You are not authorized to join this call");
     }
 
-    const now = new Date();
-    const appointmentTime = new Date(`${appointment.date} ${appointment.time}`);
-    const timeDifference = (appointmentTime - now) / (1000 * 60);
+    // --- NO RESTRICTIONS (Users can join anytime) ---
 
-    if (timeDifference < -1) {
-      throw new Error("The appointment time has already passed.");
-    }
-
-    if (timeDifference > 30) {
-      throw new Error(
-        "You can only join the video consultation 30 minutes before the appointment."
-      );
-    }
-
-    const appointmentEndTime = new Date(appointmentTime);
-    appointmentEndTime.setMinutes(appointmentEndTime.getMinutes() + 30);
-
-    const expirationTime =
-      Math.floor(appointmentEndTime.getTime() / 1000) + 60 * 60;
+    // Expire after 2 hours to be safe
+    const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60 * 2;
 
     const connectionData = JSON.stringify({
       name: user.name,
@@ -201,6 +175,7 @@ export async function generateVideoToken(formData) {
       userId: user._id.toString(),
     });
 
+    // Generate token
     const token = vonage.video.generateClientToken(
       appointment.consultationLink,
       {
