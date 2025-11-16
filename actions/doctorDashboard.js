@@ -158,3 +158,17 @@ export async function setAvailability(availability) {
     availability: user.doctor.availability,
   };
 }
+
+
+export async function getAvailability() {
+  await connectDB();
+
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  const user = await User.findOne({ clerkUserId: userId }).populate("doctor");
+
+  if (!user || user.role !== "DOCTOR") return null;
+
+  return user.doctor.availability || null;
+}

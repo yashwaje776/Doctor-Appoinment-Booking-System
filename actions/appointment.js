@@ -135,8 +135,6 @@ export async function markPaymentPaid({
   }
 }
 
-// ==================================================
-// GENERATE VIDEO TOKEN
 export async function generateVideoToken(formData) {
   const { userId } = await auth();
 
@@ -156,7 +154,6 @@ export async function generateVideoToken(formData) {
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) throw new Error("Appointment not found");
 
-    // Check if user is doctor or patient of this appointment
     if (
       appointment.doctorId.toString() !== user.doctor?._id.toString() &&
       appointment.patientId.toString() !== user._id.toString()
@@ -164,9 +161,7 @@ export async function generateVideoToken(formData) {
       throw new Error("You are not authorized to join this call");
     }
 
-    // --- NO RESTRICTIONS (Users can join anytime) ---
-
-    // Expire after 2 hours to be safe
+   
     const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60 * 2;
 
     const connectionData = JSON.stringify({
@@ -175,7 +170,6 @@ export async function generateVideoToken(formData) {
       userId: user._id.toString(),
     });
 
-    // Generate token
     const token = vonage.video.generateClientToken(
       appointment.consultationLink,
       {
@@ -198,10 +192,6 @@ export async function generateVideoToken(formData) {
     throw new Error("Failed to generate video token: " + error.message);
   }
 }
-
-// ==================================================
-// COMPLETE APPOINTMENT
-// ==================================================
 export async function completeAppointment(appointmentId) {
   try {
     await connectDB();
@@ -233,9 +223,6 @@ export async function completeAppointment(appointmentId) {
   }
 }
 
-// ==================================================
-// CANCEL APPOINTMENT
-// ==================================================
 export async function cancelAppointment(appointmentId) {
   try {
     await connectDB();

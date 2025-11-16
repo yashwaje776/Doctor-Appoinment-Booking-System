@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -9,12 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar, Clock, CreditCard, ArrowLeft, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
-export default function BookingFormModal({
-  open,
-  onClose,
-  slot,
-  onConfirm
-}) {
+export default function BookingFormModal({ open, onClose, slot, onConfirm }) {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 

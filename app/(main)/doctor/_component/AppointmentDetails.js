@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,60 +13,99 @@ import JoinMeetingButton from "./JoinMeetingButton";
 export default function AppointmentDetails({ appointment }) {
   const [open, setOpen] = useState(false);
 
-  const canJoinMeeting = useMemo(() => {
+  const canJoinMeeting = (() => {
     if (appointment.status !== "pending") return false;
 
-    const dateStr = appointment.date; 
-    const timeStr = appointment.time; 
-
-    const appointmentDateTime = new Date(`${dateStr}T${timeStr}:00`);
+    const appointmentDateTime = new Date(
+      `${appointment.date}T${appointment.time}:00`
+    );
     const now = new Date();
 
-    const diffMs = appointmentDateTime - now;
-    const diffMinutes = diffMs / (1000 * 60);
+    const diffInMinutes =
+      (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60);
 
-    return diffMinutes <= 30 && diffMinutes > -60; 
-  }, [appointment]);
+    return diffInMinutes <= 30 && diffInMinutes > -60;
+  })();
 
   return (
     <>
       <Button
         variant="outline"
-        className="text-sm"
+        className="text-sm rounded-lg"
         onClick={() => setOpen(true)}
       >
         View Details
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md rounded-2xl shadow-xl p-6">
           <DialogHeader>
-            <DialogTitle>Appointment Details</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">
+              Appointment Details
+            </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-3 text-sm">
-            <p>
-              <strong>Patient:</strong> {appointment.patientId?.name}
-            </p>
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(appointment.date).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Time:</strong> {appointment.time}
-            </p>
-            <p>
-              <strong>Status:</strong> {appointment.status}
-            </p>
-            <p>
-              <strong>Amount:</strong> Rs {appointment.amount}
-            </p>
-            <p>
-              <strong>Payment:</strong> {appointment.paymentStatus}
-            </p>
+          <div className="space-y-4 text-sm mt-2">
+            <div className="p-3 bg-muted/40 rounded-lg">
+              <p className="font-medium">🧑‍🤝‍🧑 {appointment.patientId?.name}</p>
+              {appointment.patientId?.email && (
+                <p className="text-muted-foreground">
+                  {appointment.patientId.email}
+                </p>
+              )}
+            </div>
 
-            {canJoinMeeting && (
-              <JoinMeetingButton appointmentId={appointment._id} />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="text-xs text-muted-foreground">Date</p>
+                <p className="font-semibold">
+                  {new Date(appointment.date).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-muted/30">
+                <p className="text-xs text-muted-foreground">Time</p>
+                <p className="font-semibold">{appointment.time}</p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-lg bg-muted/30">
+              <p className="text-xs text-muted-foreground">Consultation Fee</p>
+              <p className="font-semibold">₹{appointment.amount}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <span
+                className={`px-3 py-1 text-xs rounded-full font-medium ${
+                  appointment.status === "completed"
+                    ? "bg-green-100 text-green-700"
+                    : appointment.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+              >
+                Status: {appointment.status}
+              </span>
+
+              <span
+                className={`px-3 py-1 text-xs rounded-full font-medium ${
+                  appointment.paymentStatus === "paid"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                Payment: {appointment.paymentStatus}
+              </span>
+            </div>
+
+            {canJoinMeeting ? (
+              <div className="pt-2">
+                <JoinMeetingButton appointmentId={appointment._id} />
+              </div>
+            ) : (
+              <p className="text-xs text-center text-muted-foreground">
+                🔒 You can join the meeting 30 minutes before the appointment.
+              </p>
             )}
           </div>
         </DialogContent>

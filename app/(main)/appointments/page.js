@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 import { getUserAppointment } from "@/actions/user";
 import { cancelAppointment } from "@/actions/user";
@@ -20,8 +19,12 @@ export default function MyAppointmentsPage() {
 
   const loadAppointments = async () => {
     setLoading(true);
+
     const data = await getUserAppointment();
-    setAppointments(data || []);
+
+    const plain = JSON.parse(JSON.stringify(data || []));
+
+    setAppointments(plain);
     setLoading(false);
   };
 
@@ -30,14 +33,7 @@ export default function MyAppointmentsPage() {
   }, []);
 
   const handleCancel = async (id) => {
-    const res = await cancelAppointment(id);
-
-    if (!res.success) {
-      toast.error(res.message);
-      return;
-    }
-
-    toast.success("Appointment Cancelled!");
+    await cancelAppointment(id);
     loadAppointments();
   };
 
@@ -45,7 +41,7 @@ export default function MyAppointmentsPage() {
     const appointmentId = app._id;
 
     const order = await createPayment(app.amount, appointmentId);
-    if (!order.success) return toast.error("Failed to create order");
+    if (!order.success) return;
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -59,7 +55,7 @@ export default function MyAppointmentsPage() {
           appointmentId,
         });
 
-        if (!verify.success) return toast.error("Payment verification failed");
+        if (!verify.success) return;
 
         await markPaymentPaid({
           appointmentId,
@@ -67,9 +63,8 @@ export default function MyAppointmentsPage() {
           razorpay_payment_id: response.razorpay_payment_id,
         });
 
-        toast.success("Payment Successful!");
+        loadAppointments();
       },
-      prefill: {},
       theme: { color: "#22c55e" },
     };
 
@@ -141,19 +136,14 @@ export default function MyAppointmentsPage() {
               </div>
 
               <div className="text-sm space-y-1">
-                <p>
-                  <b>Date:</b> {app.date}
-                </p>
-                <p>
-                  <b>Time:</b> {app.time}
-                </p>
-                <p>
-                  <b>Amount:</b> ₹{app.amount}
-                </p>
+                <p>Date: {app.date}</p>
+                <p>Time: {app.time}</p>
+                <p>Amount: ₹{app.amount}</p>
               </div>
-               
+
               <div className="flex gap-3">
-               <ViewDetailsModal appointment={app} />
+                <ViewDetailsModal appointment={app} />
+
                 {(app.status === "pending" || app.status === "confirmed") && (
                   <button
                     onClick={() => handleCancel(app._id)}

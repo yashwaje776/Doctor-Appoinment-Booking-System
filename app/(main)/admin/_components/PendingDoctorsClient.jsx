@@ -20,7 +20,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { updateVerification } from "@/actions/admin";
 
-import { toast } from "sonner";
 
 export default function PendingDoctorsClient({ doctors }) {
   const [selectedDoctor, setSelectedDoctor] = useState(null);

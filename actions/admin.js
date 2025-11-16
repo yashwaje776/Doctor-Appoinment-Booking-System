@@ -113,3 +113,32 @@ export async function getAllPatients() {
     _id: p._id.toString(),
   }));
 }
+
+
+export async function getAllAppointments() {
+  await connectDB();
+
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const admin = await User.findOne({ clerkUserId: userId }).lean();
+  if (!admin || admin.role !== "ADMIN") {
+    throw new Error("Admin access required");
+  }
+
+  const appointments = await Appointment.find()
+    .populate("doctorId", "user")
+    .populate("patientId", "name email imageUrl")
+    .lean();
+
+  return appointments.map((a) => ({
+    ...a,
+    _id: a._id.toString(),
+    doctorId: a.doctorId
+      ? { ...a.doctorId, _id: a.doctorId._id.toString() }
+      : null,
+    patientId: a.patientId
+      ? { ...a.patientId, _id: a.patientId._id.toString() }
+      : null,
+  }));
+}

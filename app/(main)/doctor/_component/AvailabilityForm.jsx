@@ -1,13 +1,21 @@
 "use client";
 
 import { setAvailability } from "@/actions/doctorDashboard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
-export default function AvailabilityForm() {
+export default function AvailabilityForm({ availability }) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (availability) {
+      setStart(availability.start || "");
+      setEnd(availability.end || "");
+    }
+  }, [availability]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -15,8 +23,9 @@ export default function AvailabilityForm() {
 
     try {
       const res = await setAvailability({ start, end });
-
       toast.success(res?.message || "Availability updated!");
+
+      setIsEditing(false); 
     } catch (error) {
       toast.error(error?.message || "Something went wrong.");
     }
@@ -24,6 +33,33 @@ export default function AvailabilityForm() {
     setLoading(false);
   }
 
+  if (!isEditing) {
+    return (
+      <div className="p-4 border rounded-md shadow-sm space-y-3">
+        <p className="text-sm font-medium">Current Availability:</p>
+
+        {availability ? (
+          <>
+            <p>Start: <b>{availability.start}</b></p>
+            <p>End: <b>{availability.end}</b></p>
+          </>
+        ) : (
+          <p className="text-muted-foreground">Not set yet</p>
+        )}
+
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-md"
+          onClick={() => setIsEditing(true)}
+        >
+          Update Availability
+        </button>
+      </div>
+    );
+  }
+
+  // ----------------------------------
+  // 2️⃣ SHOW FORM WHEN EDITING
+  // ----------------------------------
   return (
     <form
       onSubmit={handleSubmit}
@@ -51,13 +87,23 @@ export default function AvailabilityForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md"
-      >
-        {loading ? "Saving..." : "Save Availability"}
-      </button>
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-green-600 text-white rounded-md"
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
+
+        <button
+          type="button"
+          className="px-4 py-2 bg-gray-300 rounded-md"
+          onClick={() => setIsEditing(false)}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

@@ -5,7 +5,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 
 export default function Page() {
   return (
-    <div className="bg-background">
+    <div className="bg-background px-[5%]">
       <HeroSection />
       <Features />
       <HowItWorks />

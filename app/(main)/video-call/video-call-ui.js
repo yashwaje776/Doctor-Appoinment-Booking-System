@@ -71,16 +71,14 @@ export default function VideoCall({ sessionId, token }) {
         );
       });
 
-      // Handle session events
       sessionRef.current.on("sessionConnected", () => {
         setIsConnected(true);
         setIsLoading(false);
 
-        // THIS IS THE FIX - Initialize publisher AFTER session connects
         publisherRef.current = window.OT.initPublisher(
-          "publisher", // This targets the div with id="publisher"
+          "publisher", 
           {
-            insertMode: "replace", // Change from "append" to "replace"
+            insertMode: "replace", 
             width: "100%",
             height: "100%",
             publishAudio: isAudioEnabled,
@@ -103,12 +101,10 @@ export default function VideoCall({ sessionId, token }) {
         setIsConnected(false);
       });
 
-      // Connect to the session
       sessionRef.current.connect(token, (error) => {
         if (error) {
           toast.error("Error connecting to video session");
         } else {
-          // Publish your stream AFTER connecting
           if (publisherRef.current) {
             sessionRef.current.publish(publisherRef.current, (error) => {
               if (error) {
@@ -127,7 +123,6 @@ export default function VideoCall({ sessionId, token }) {
     }
   };
 
-  // Toggle video
   const toggleVideo = () => {
     if (publisherRef.current) {
       publisherRef.current.publishVideo(!isVideoEnabled);
@@ -135,7 +130,6 @@ export default function VideoCall({ sessionId, token }) {
     }
   };
 
-  // Toggle audio
   const toggleAudio = () => {
     if (publisherRef.current) {
       publisherRef.current.publishAudio(!isAudioEnabled);
@@ -143,15 +137,12 @@ export default function VideoCall({ sessionId, token }) {
     }
   };
 
-  // End call
   const endCall = () => {
-    // Properly destroy publisher
     if (publisherRef.current) {
       publisherRef.current.destroy();
       publisherRef.current = null;
     }
 
-    // Disconnect session
     if (sessionRef.current) {
       sessionRef.current.disconnect();
       sessionRef.current = null;
@@ -160,7 +151,6 @@ export default function VideoCall({ sessionId, token }) {
     router.push("/appointments");
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (publisherRef.current) {
@@ -226,7 +216,6 @@ export default function VideoCall({ sessionId, token }) {
         ) : (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Publisher (Your video) */}
               <div className="border border-emerald-900/20 rounded-lg overflow-hidden">
                 <div className="bg-emerald-900/10 px-3 py-2 text-emerald-400 text-sm font-medium">
                   You
@@ -245,7 +234,6 @@ export default function VideoCall({ sessionId, token }) {
                 </div>
               </div>
 
-              {/* Subscriber (Other person's video) */}
               <div className="border border-emerald-900/20 rounded-lg overflow-hidden">
                 <div className="bg-emerald-900/10 px-3 py-2 text-emerald-400 text-sm font-medium">
                   Other Participant
@@ -265,7 +253,6 @@ export default function VideoCall({ sessionId, token }) {
               </div>
             </div>
 
-            {/* Video controls */}
             <div className="flex justify-center space-x-4">
               <Button
                 variant="outline"

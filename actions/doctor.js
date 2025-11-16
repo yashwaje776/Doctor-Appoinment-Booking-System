@@ -31,7 +31,6 @@ export async function getDoctorsBySpeciality(speciality) {
         : null,
     }));
   } catch (error) {
-    console.error("getDoctorsBySpeciality Error:", error.message);
     throw new Error(error.message || "Failed to fetch doctors");
   }
 }
@@ -54,7 +53,6 @@ export async function getDoctorById(speciality, id) {
 
     return JSON.parse(JSON.stringify(doctor)); 
   } catch (error) {
-    console.error("getDoctorById Error:", error.message);
     throw new Error(error.message || "Failed to fetch doctor");
   }
 }

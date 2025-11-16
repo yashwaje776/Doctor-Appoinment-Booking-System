@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { createPayment, verifyPayment } from "@/actions/payment";
 import BookingFormModal from "./BookingFormModal";
 
 export default function TimeSelector({ docInfo, user }) {
+  const router = useRouter();
   const availability = docInfo.availability;
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -41,21 +43,16 @@ export default function TimeSelector({ docInfo, user }) {
 
   const slots = useMemo(() => {
     let s = [];
-
     const bookedForDay = docInfo.slots_booked?.[activeDate] || [];
 
     let [hour, minute] = availability.start.split(":").map(Number);
     const [endHour, endMinute] = availability.end.split(":").map(Number);
-
     const now = new Date();
 
     while (hour < endHour || (hour === endHour && minute <= endMinute)) {
-      const t = `${String(hour).padStart(2, "0")}:${String(minute).padStart(
-        2,
-        "0"
-      )}`;
-
+      const t = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
       const slotDateTime = new Date(`${activeDate}T${t}`);
+
       const isPast = activeDate === todayStr && slotDateTime < now;
       const isBooked = bookedForDay.includes(t);
 
@@ -97,8 +94,10 @@ export default function TimeSelector({ docInfo, user }) {
 
       const appointmentId = booking.appointment._id;
 
+      toast.success("Appointment Created! Redirecting to payment...");
+
       const order = await createPayment(docInfo.fees, appointmentId);
-      if (!order.success) return toast.error("Failed to create order");
+      if (!order.success) return toast.error("Failed to create payment order");
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -113,8 +112,7 @@ export default function TimeSelector({ docInfo, user }) {
             appointmentId,
           });
 
-          if (!verify.success)
-            return toast.error("Payment verification failed");
+          if (!verify.success) return toast.error("Payment verification failed");
 
           await markPaymentPaid({
             appointmentId,
@@ -123,6 +121,7 @@ export default function TimeSelector({ docInfo, user }) {
           });
 
           toast.success("Payment Successful!");
+          router.push("/appointment");
         },
 
         prefill: {
@@ -135,52 +134,52 @@ export default function TimeSelector({ docInfo, user }) {
       };
 
       new window.Razorpay(options).open();
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong");
     }
   };
 
   return (
-    <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mt-6 text-white space-y-6">
-      <h2 className="text-xl font-semibold">Book Appointment</h2>
+    <div className="bg-neutral-900 border border-neutral-700 rounded-2xl p-6 mt-6 text-white space-y-6 shadow-xl shadow-black/20">
+      <h2 className="text-xl font-semibold tracking-wide">Book Appointment</h2>
 
       <Tabs defaultValue={activeDate} onValueChange={setActiveDate}>
-        <TabsList className="w-full justify-start overflow-x-auto p-2">
+        <TabsList className="w-full justify-start overflow-x-auto p-2 rounded-lg bg-neutral-800">
           {days.map((day) => (
             <TabsTrigger
               key={day.date}
               value={day.date}
-              className="flex gap-2 p-2"
+              className="flex gap-2 px-4 py-2 rounded-lg data-[state=active]:bg-emerald-600/20 data-[state=active]:text-emerald-400 hover:bg-neutral-700 transition"
             >
-              <div className="opacity-80">{day.label}</div>
-              <div>({day.weekday})</div>
+              {day.label} <span className="opacity-70">{day.weekday}</span>
             </TabsTrigger>
           ))}
         </TabsList>
 
         {days.map((day) => (
           <TabsContent key={day.date} value={day.date} className="pt-4">
-            <h3 className="text-lg font-medium mb-2">{day.display}</h3>
+            <h3 className="text-lg font-medium mb-4 opacity-90">{day.display}</h3>
 
             {slots.length === 0 ? (
-              <p className="text-neutral-500 py-8 text-center">
+              <p className="text-neutral-500 py-8 text-center text-sm">
                 No Slots Available
               </p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {slots.map((slot) => (
                   <Card
                     key={slot.startTime}
                     onClick={() => setSelectedSlot(slot)}
-                    className={`cursor-pointer border-neutral-700 transition-all ${
-                      selectedSlot?.startTime === slot.startTime
-                        ? "bg-emerald-900/30 border-emerald-600"
-                        : "hover:border-emerald-700/40"
-                    }`}
+                    className={`cursor-pointer rounded-xl transition-all border 
+                      ${
+                        selectedSlot?.startTime === slot.startTime
+                          ? "bg-emerald-700/30 border-emerald-500 shadow-md shadow-emerald-700/30"
+                          : "bg-neutral-800 border-neutral-700 hover:bg-neutral-700/50 hover:border-neutral-500"
+                      }`}
                   >
-                    <CardContent className="p-2 flex items-center">
-                      <Clock className="h-4 w-4 mr-2" />
-                      <span>{format(new Date(slot.startTime), "h:mm a")}</span>
+                    <CardContent className="p-3 flex items-center justify-center gap-2 text-sm font-medium">
+                      <Clock className="h-4 w-4 text-emerald-400" />
+                      {format(new Date(slot.startTime), "h:mm a")}
                     </CardContent>
                   </Card>
                 ))}
@@ -192,7 +191,7 @@ export default function TimeSelector({ docInfo, user }) {
 
       <div className="flex justify-end">
         <Button
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg text-white font-semibold"
           disabled={!selectedSlot}
           onClick={handleContinue}
         >
