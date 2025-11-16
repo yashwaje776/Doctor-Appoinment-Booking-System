@@ -85,5 +85,18 @@ BookMyDoc uses **Razorpay Payment Gateway** to securely collect consultation fee
 
 ## 📸 Screenshots
 
-Add your screenshots here:
+### 🏠 Home Page
+![Home Page](./public/home.png)
+
+### 👨‍⚕️ Doctor Dashboard
+![Doctor Dashboard](./public/doctor-dashboard.png)
+
+### 👤 Patient Dashboard
+![Patient Dashboard](./public/patient-dashboard.png)
+
+### 🛠️ Admin Panel
+![Admin Panel](./public/admin-panel.png)
+
+### 💳 Razorpay Payment Page
+![Payment Page](./public/payment.png)
 
