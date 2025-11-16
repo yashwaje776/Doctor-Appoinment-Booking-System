@@ -16,6 +16,9 @@ const credentials = new Auth({
 const options = {};
 const vonage = new Vonage(credentials, options);
 
+// ==================================================
+// BOOK APPOINTMENT
+// ==================================================
 export async function bookAppointment(data) {
   try {
     await connectDB();
@@ -67,6 +70,7 @@ export async function bookAppointment(data) {
       status: "pending",
       paymentStatus: "pending",
     });
+
     const id = await createVideoSession();
 
     appointment.consultationLink = id;
@@ -81,7 +85,7 @@ export async function bookAppointment(data) {
     };
   } catch (error) {
     console.error("Book Appointment Error:", error);
-    return { success: false, message: "Server error while booking" };
+    return { success: false, message: error};
   }
 }
 
@@ -90,10 +94,14 @@ async function createVideoSession() {
     const session = await vonage.video.createSession({ mediaMode: "routed" });
     return session.sessionId;
   } catch (error) {
+    console.error("Vonage Session Error:", error);
     throw new Error("Failed to create video session: " + error.message);
   }
 }
 
+// ==================================================
+// MARK PAYMENT
+// ==================================================
 export async function markPaymentPaid({
   appointmentId,
   razorpay_order_id,
@@ -131,10 +139,15 @@ export async function markPaymentPaid({
     return { success: false, message: "Server error while updating payment" };
   }
 }
+
+// ==================================================
+// GENERATE VIDEO TOKEN
+// ==================================================
 export async function generateVideoToken(formData) {
   const { userId } = await auth();
 
   if (!userId) {
+    console.error("Unauthorized token access attempt");
     throw new Error("Unauthorized");
   }
 
@@ -163,41 +176,30 @@ export async function generateVideoToken(formData) {
       appointment.doctorId.toString() !== user.doctor?._id.toString() &&
       appointment.patientId.toString() !== user._id.toString()
     ) {
+      console.error("Unauthorized video access. User:", user._id);
       throw new Error("You are not authorized to join this call");
     }
 
-    // --------------------------
-    // ✔ Corrected Time Validation
-    // --------------------------
-
     const now = new Date();
     const appointmentTime = new Date(`${appointment.date} ${appointment.time}`);
-
-    // Minutes until appointment (negative if passed)
     const timeDifference = (appointmentTime - now) / (1000 * 60);
 
-    // ❌ Appointment already passed
     if (timeDifference < -1) {
       throw new Error("The appointment time has already passed.");
     }
 
-    // ❌ Appointment more than 30 minutes away
     if (timeDifference > 30) {
       throw new Error(
         "You can only join the video consultation 30 minutes before the appointment."
       );
     }
 
-    // --------------------------
-    // ✔ Token Expiration
-    // --------------------------
     const appointmentEndTime = new Date(appointmentTime);
     appointmentEndTime.setMinutes(appointmentEndTime.getMinutes() + 30);
 
     const expirationTime =
       Math.floor(appointmentEndTime.getTime() / 1000) + 60 * 60;
 
-    // Connection data sent to Vonage
     const connectionData = JSON.stringify({
       name: user.name,
       role: user.role,
@@ -227,6 +229,9 @@ export async function generateVideoToken(formData) {
   }
 }
 
+// ==================================================
+// COMPLETE APPOINTMENT
+// ==================================================
 export async function completeAppointment(appointmentId) {
   try {
     await connectDB();
@@ -258,6 +263,9 @@ export async function completeAppointment(appointmentId) {
   }
 }
 
+// ==================================================
+// CANCEL APPOINTMENT
+// ==================================================
 export async function cancelAppointment(appointmentId) {
   try {
     await connectDB();
