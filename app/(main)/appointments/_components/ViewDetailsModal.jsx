@@ -15,7 +15,7 @@ export default function ViewDetailsModal({ appointment }) {
   const [open, setOpen] = useState(false);
   const handleJoin = () => {
     router.push(
-      `/video-call?sessionId=${appointment.consultationLink}&token=${appointment.token}&appointmentId=${appointment._id}`
+      `/video-call?sessionId=${appointment.consultationLink}&token=${appointment.videoSessionToken}&appointmentId=${appointment._id}`
     );
   };
 

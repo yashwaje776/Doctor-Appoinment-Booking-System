@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getDoctorsBySpeciality } from "@/actions/doctor";
-import { DoctorCard } from "../_components/page";
 import { PageHeader } from "@/components/page-header";
+import { DoctorCard } from "../_components/page";
 
 export default async function DoctorSpecialtyPage({ params }) {
   const { speciality } = await params;

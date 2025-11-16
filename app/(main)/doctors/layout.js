@@ -7,9 +7,9 @@ export const metadata = {
   description: "Book appointments with doctors by speciality",
 };
 
-const layout = async({ children }) => {
-  const user=await vailduser();
-  if(!user){
+const layout = async ({ children }) => {
+  const user = await vailduser();
+  if (!user) {
     redirect("/");
   }
   return (

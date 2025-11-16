@@ -9,16 +9,14 @@ import { Auth } from "@vonage/auth";
 import { Vonage } from "@vonage/server-sdk";
 import { revalidatePath } from "next/cache";
 
+const privateKey = process.env.VONAGE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 const credentials = new Auth({
   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
-  privateKey: process.env.VONAGE_PRIVATE_KEY,
+  privateKey,
 });
 const options = {};
 const vonage = new Vonage(credentials, options);
 
-// ==================================================
-// BOOK APPOINTMENT
-// ==================================================
 export async function bookAppointment(data) {
   try {
     await connectDB();
@@ -85,7 +83,7 @@ export async function bookAppointment(data) {
     };
   } catch (error) {
     console.error("Book Appointment Error:", error);
-    return { success: false, message: error};
+    return { success: false, message: error };
   }
 }
 
@@ -99,9 +97,6 @@ async function createVideoSession() {
   }
 }
 
-// ==================================================
-// MARK PAYMENT
-// ==================================================
 export async function markPaymentPaid({
   appointmentId,
   razorpay_order_id,

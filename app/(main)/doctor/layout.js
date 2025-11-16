@@ -30,7 +30,6 @@ export default async function DoctorLayout({ children }) {
           defaultValue="dashboard"
           className="grid grid-cols-1 md:grid-cols-4 gap-6"
         >
-          {/* ------------------ SIDEBAR ------------------ */}
           <TabsList
             className="
               md:col-span-1
@@ -44,7 +43,6 @@ export default async function DoctorLayout({ children }) {
               h-auto md:h-[300px]
             "
           >
-            {/* Dashboard */}
             <TabsTrigger
               value="dashboard"
               className="w-full py-2 md:px-4 md:flex md:items-center md:justify-start"
@@ -53,7 +51,6 @@ export default async function DoctorLayout({ children }) {
               Dashboard
             </TabsTrigger>
 
-            {/* Appointment Requests */}
             <TabsTrigger
               value="pending"
               className="w-full py-2 md:px-4 md:flex md:items-center md:justify-start"
@@ -63,7 +60,6 @@ export default async function DoctorLayout({ children }) {
             </TabsTrigger>
 
 
-            {/* Availability */}
             <TabsTrigger
               value="availability"
               className="w-full py-2 md:px-4 md:flex md:items-center md:justify-start"

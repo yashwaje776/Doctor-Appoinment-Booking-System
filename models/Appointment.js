@@ -44,7 +44,7 @@ const AppointmentSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-     videoSessionToken: {
+    videoSessionToken: {
       type: String,
       default: null,
     },

@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Script from "next/script";
-import { Toaster } from 'react-hot-toast';
 
 
 const geistSans = Geist({
@@ -48,7 +47,7 @@ export default function RootLayout({ children }) {
             <Header />
 
             <main className="min-h-screen pt-16">
-               <Toaster />
+               
               {children}
             </main>
 
