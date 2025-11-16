@@ -86,7 +86,7 @@ BookMyDoc uses **Razorpay Payment Gateway** to securely collect consultation fee
 ## 📸 Screenshots
 
 ### 🏠 Home Page
-![Home Page](./public/home.jpg)
+![Home Page](./public/HOME.jpg)
 
 ### 👨‍⚕️ Doctor Dashboard
 ![Doctor Dashboard](./public/doc.jpg)
@@ -95,5 +95,5 @@ BookMyDoc uses **Razorpay Payment Gateway** to securely collect consultation fee
 ![Patient Dashboard](./public/metting.jpg)
 
 ### 🛠️ Admin Panel
-![Admin Panel](./public/admin.jppg)
+![Admin Panel](./public/admin.jpg)
 
