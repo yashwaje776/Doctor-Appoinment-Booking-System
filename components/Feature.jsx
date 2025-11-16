@@ -7,8 +7,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 export default function Features() {
   const features = [
@@ -16,31 +14,32 @@ export default function Features() {
       title: "Book Appointments Instantly",
       description:
         "Find doctors by specialty and book appointments in seconds — no waiting, no hassle.",
-      icon: <Calendar className="h-6 w-6 text-emerald-400" />,
+      Icon: Calendar,
     },
     {
       title: "Secure Video Consultations",
       description:
         "Talk to your doctor from anywhere using encrypted, high-quality video calls.",
-      icon: <Video className="h-6 w-6 text-emerald-400" />,
+      Icon: Video,
     },
     {
       title: "Verified & Trusted Doctors",
       description:
         "Every professional on BookMyDoc is verified for credentials and experience.",
-      icon: <Stethoscope className="h-6 w-6 text-emerald-400" />,
+      Icon: Stethoscope,
     },
     {
       title: "Data Privacy & Protection",
       description:
         "We use end-to-end encryption and HIPAA-compliant storage to protect your health data.",
-      icon: <ShieldCheck className="h-6 w-6 text-emerald-400" />,
+      Icon: ShieldCheck,
     },
   ];
 
   return (
-    <section className="py-20 text-gray-100 ">
+    <section className="py-20 text-gray-100">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-16 space-y-5">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
@@ -48,28 +47,31 @@ export default function Features() {
             </span>
           </h2>
 
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-16">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             BookMyDoc helps you connect with trusted doctors, book appointments
             instantly, and access secure video consultations — all in one
             seamless and modern platform.
           </p>
         </div>
 
+        {/* Feature Cards */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature, index) => (
+          {features.map(({ title, description, Icon }, index) => (
             <Card
               key={index}
-              className="border border-gray-800 hover:border-emerald-700/40 transition-colors shadow-mdtext-center"
+              className="border border-gray-800 hover:border-emerald-700/40 transition-colors shadow-md text-center"
             >
-              <CardHeader className="flex flex-col items-center justify-center text-center space-y-3">
+              <CardHeader className="flex flex-col items-center justify-center space-y-3">
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-emerald-900/30">
-                  {feature.icon}
+                  <Icon className="h-6 w-6 text-emerald-400" />
                 </div>
+
                 <CardTitle className="text-lg font-semibold text-gray-100">
-                  {feature.title}
+                  {title}
                 </CardTitle>
+
                 <CardDescription className="text-gray-400 text-sm leading-relaxed">
-                  {feature.description}
+                  {description}
                 </CardDescription>
               </CardHeader>
             </Card>

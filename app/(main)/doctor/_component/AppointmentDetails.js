@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,21 @@ import JoinMeetingButton from "./JoinMeetingButton";
 
 export default function AppointmentDetails({ appointment }) {
   const [open, setOpen] = useState(false);
+
+  const canJoinMeeting = useMemo(() => {
+    if (appointment.status !== "pending") return false;
+
+    const dateStr = appointment.date; 
+    const timeStr = appointment.time; 
+
+    const appointmentDateTime = new Date(`${dateStr}T${timeStr}:00`);
+    const now = new Date();
+
+    const diffMs = appointmentDateTime - now;
+    const diffMinutes = diffMs / (1000 * 60);
+
+    return diffMinutes <= 30 && diffMinutes > -60; 
+  }, [appointment]);
 
   return (
     <>
@@ -50,7 +65,7 @@ export default function AppointmentDetails({ appointment }) {
               <strong>Payment:</strong> {appointment.paymentStatus}
             </p>
 
-            {appointment.status === "pending" && (
+            {canJoinMeeting && (
               <JoinMeetingButton appointmentId={appointment._id} />
             )}
           </div>

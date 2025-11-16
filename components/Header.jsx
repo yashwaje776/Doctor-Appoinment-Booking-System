@@ -2,23 +2,24 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Calendar, CreditCard, ShieldCheck, Stethoscope, User } from "lucide-react";
-import { Badge } from "./ui/badge";
+import { Calendar, ShieldCheck, Stethoscope, User } from "lucide-react";
 import { checkUser } from "@/lib/checkUser";
 
-const Header = async() => {
+const Header = async () => {
   const user=await checkUser();
   return (
-     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-10 supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-10 supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 cursor-pointer font-bold text-xl">
-           BookMyDoc
+        <Link
+          href="/"
+          className="flex items-center gap-2 cursor-pointer font-bold text-xl"
+        >
+          BookMyDoc
         </Link>
 
-     <div className="flex items-center gap-3 md:gap-4">
-         <SignedIn>
-            {
-              user?.role === "ADMIN" && (
+        <div className="flex items-center gap-3 md:gap-4">
+          <SignedIn>
+            {user?.role === "ADMIN" && (
               <Link href="/admin">
                 <Button
                   variant="outline"
@@ -79,10 +80,8 @@ const Header = async() => {
             )}
           </SignedIn>
 
-         
-
           <SignedOut>
-            <SignInButton >
+            <SignInButton>
               <Button variant="outline">Sign In</Button>
             </SignInButton>
           </SignedOut>
@@ -91,7 +90,6 @@ const Header = async() => {
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
-     
       </nav>
     </header>
   );

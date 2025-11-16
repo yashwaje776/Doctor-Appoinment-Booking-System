@@ -2,21 +2,25 @@
 
 import { setAvailability } from "@/actions/doctorDashboard";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AvailabilityForm() {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
-    const res = await setAvailability({ start, end });
-    console.log(res);
+    try {
+      const res = await setAvailability({ start, end });
 
-    setMessage(res?.message || "Updated!");
+      toast.success(res?.message || "Availability updated!");
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong.");
+    }
+
     setLoading(false);
   }
 
@@ -54,8 +58,6 @@ export default function AvailabilityForm() {
       >
         {loading ? "Saving..." : "Save Availability"}
       </button>
-
-      {message && <p className="text-green-600 text-sm">{message}</p>}
     </form>
   );
 }

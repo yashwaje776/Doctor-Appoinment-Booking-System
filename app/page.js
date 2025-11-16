@@ -3,15 +3,13 @@ import HeroSection from "@/components/HeroSection";
 import HowItWorks from "@/components/HowItWork";
 import TestimonialsSection from "@/components/TestimonialsSection";
 
-const page = async () => {
+export default function Page() {
   return (
-    <div className="bg-background  ">
-      <HeroSection></HeroSection>
-      <Features></Features>
-      <HowItWorks></HowItWorks>
-      <TestimonialsSection></TestimonialsSection>
+    <div className="bg-background">
+      <HeroSection />
+      <Features />
+      <HowItWorks />
+      <TestimonialsSection />
     </div>
   );
-};
-
-export default page;
+}

@@ -2,22 +2,40 @@
 
 import { cancelAppointment, completeAppointment } from "@/actions/appointment";
 import { useTransition } from "react";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 export default function AppointmentActions({ appointmentId }) {
   const [isPending, startTransition] = useTransition();
 
   function handleComplete() {
     startTransition(async () => {
-      const res = await completeAppointment(appointmentId);
-      toast(res.message);
+      try {
+        const res = await completeAppointment(appointmentId);
+
+        if (res?.success) {
+          toast.success(res.message || "Appointment marked complete.");
+        } else {
+          toast.error(res?.message || "Failed to complete appointment.");
+        }
+      } catch (error) {
+        toast.error(error?.message || "Something went wrong.");
+      }
     });
   }
 
   function handleCancel() {
     startTransition(async () => {
-      const res = await cancelAppointment(appointmentId);
-      toast(res.message);
+      try {
+        const res = await cancelAppointment(appointmentId);
+
+        if (res?.success) {
+          toast.success(res.message || "Appointment cancelled.");
+        } else {
+          toast.error(res?.message || "Failed to cancel appointment.");
+        }
+      } catch (error) {
+        toast.error(error?.message || "Something went wrong.");
+      }
     });
   }
 
@@ -31,7 +49,6 @@ export default function AppointmentActions({ appointmentId }) {
         {isPending ? "..." : "Complete"}
       </button>
 
-      {/* CANCEL */}
       <button
         onClick={handleCancel}
         disabled={isPending}

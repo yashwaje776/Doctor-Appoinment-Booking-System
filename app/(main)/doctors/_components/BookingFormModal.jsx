@@ -21,9 +21,7 @@ export default function BookingFormModal({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     await onConfirm(description);
-
     setLoading(false);
   };
 
@@ -38,7 +36,6 @@ export default function BookingFormModal({
           </DialogTitle>
         </DialogHeader>
 
-        {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-muted/20 p-4 rounded-lg border border-emerald-900/20 space-y-3">
             <div className="flex items-center">
@@ -58,8 +55,8 @@ export default function BookingFormModal({
             <div className="flex items-center">
               <CreditCard className="h-5 w-5 text-emerald-400 mr-2" />
               <span className="text-muted-foreground">
-                Cost:{" "}
-                <span className="text-white font-medium">₹  {slot.fee}</span>
+                Cost:
+                <span className="text-white font-medium"> ₹ {slot.fee}</span>
               </span>
             </div>
           </div>
@@ -74,7 +71,6 @@ export default function BookingFormModal({
             />
           </div>
 
-          {/* ACTION BUTTONS */}
           <div className="flex justify-between">
             <Button
               type="button"

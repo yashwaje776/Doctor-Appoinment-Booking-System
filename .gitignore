@@ -12,7 +12,8 @@
 
 # testing
 /coverage
-
+.env
+/lib/private.key
 # next.js
 /.next/
 /out/

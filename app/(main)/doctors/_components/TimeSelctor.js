@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Clock, ChevronRight } from "lucide-react";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 import { bookAppointment, markPaymentPaid } from "@/actions/appointment";
 import { createPayment, verifyPayment } from "@/actions/payment";
@@ -18,7 +18,6 @@ export default function TimeSelector({ docInfo, user }) {
   const availability = docInfo.availability;
   const todayStr = new Date().toISOString().split("T")[0];
 
-  // Generate next 7 days
   const days = useMemo(() => {
     const arr = [];
     const today = new Date();
@@ -40,11 +39,9 @@ export default function TimeSelector({ docInfo, user }) {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // ⭐ Generate Slots & Remove Booked Slots
   const slots = useMemo(() => {
     let s = [];
 
-    // Get booked slots for selected day
     const bookedForDay = docInfo.slots_booked?.[activeDate] || [];
 
     let [hour, minute] = availability.start.split(":").map(Number);
@@ -80,13 +77,11 @@ export default function TimeSelector({ docInfo, user }) {
     return s;
   }, [activeDate, availability, docInfo.fees, docInfo.slots_booked]);
 
-  // Open modal only if slot selected
   const handleContinue = () => {
     if (!selectedSlot) return toast.error("Please select a time!");
     setModalOpen(true);
   };
 
-  // Confirm booking & handle payment
   const confirmBooking = async (description) => {
     try {
       const booking = await bookAppointment({
@@ -102,7 +97,6 @@ export default function TimeSelector({ docInfo, user }) {
 
       const appointmentId = booking.appointment._id;
 
-      // Create payment order
       const order = await createPayment(docInfo.fees, appointmentId);
       if (!order.success) return toast.error("Failed to create order");
 
@@ -142,12 +136,10 @@ export default function TimeSelector({ docInfo, user }) {
 
       new window.Razorpay(options).open();
     } catch (err) {
-      console.log(err);
       toast.error("Something went wrong");
     }
   };
 
-  // UI Rendering
   return (
     <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mt-6 text-white space-y-6">
       <h2 className="text-xl font-semibold">Book Appointment</h2>
