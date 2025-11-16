@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🩺 BookMyDoc — Doctor Appointment Booking System
 
-## Getting Started
+BookMyDoc is a full-stack **Doctor Appointment Booking System** with three roles:  
+**Patient, Doctor, and Admin** — built using **Next.js, MongoDB, Razorpay, Clerk Auth**, and **Vonage Video Meetings**.
 
-First, run the development server:
+It allows patients to book appointments, doctors to manage consultations, and admins to verify doctors & manage the platform.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Live Demo
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+🔗 **Live Site:** https://doctor-appoinment-booking-system-td.vercel.app/
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 👥 User Roles
 
-To learn more about Next.js, take a look at the following resources:
+### 🧑‍💻 Admin
+- Approves/Rejects doctor verification
+- Views/manage all doctors & patients
+- Reviews uploaded certificates
+- Manage all appointments
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🩺 Doctor
+- Apply for verification  
+- Upload degrees/certificates  
+- Set fees, speciality, experience  
+- Accept/Reject appointments  
+- Join video meetings  
+- Manage profile  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 👨‍⚕️ Patient
+- Login/Register using Clerk  
+- Search doctors by speciality  
+- View doctor profile  
+- Book appointments  
+- Pay via Razorpay  
+- Join online video meetings  
+- View history  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### ⚙️ System Features  
+- 3 Roles (Admin, Doctor, Patient)
+- Secure Auth using **Clerk**
+- Manage doctor verification
+- Appointment management
+- Razorpay Online Payments
+- Video Calls using **Vonage**
+- Fully responsive UI  
+- Shadcn UI + Tailwind CSS  
+- Dark Mode friendly UI  
+
+---
+
+## 💳 Payment Integration (Razorpay)
+
+BookMyDoc uses **Razorpay Payment Gateway** to securely collect consultation fees.
+
+✔ Razorpay Checkout UI  
+✔ Backend order creation  
+✔ Payment signature verification  
+✔ Stores payment status  
+
+---
+
+## 🧠 Tech Stack
+
+| Layer | Technology |
+|-------|-------------|
+| **Frontend** | Next.js 15, React 19 |
+| **Styling** | Tailwind CSS + Shadcn UI |
+| **Backend** | Next.js Server Actions / API Routes |
+| **Database** | MongoDB + Mongoose |
+| **Auth** | Clerk |
+| **Payments** | Razorpay |
+| **Video Meetings** | Vonage |
+| **Deployment** | Vercel |
+
+---
+
+## 📸 Screenshots
+
+Add your screenshots here:
+
