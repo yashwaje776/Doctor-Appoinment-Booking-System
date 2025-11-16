@@ -19,6 +19,7 @@ export default async function AdminPage() {
       getAllPatients(),
       getAllAppointments(),
     ]);
+    console.log(appointment)
 
   return (
     <>
@@ -121,73 +122,78 @@ export default async function AdminPage() {
       </TabsContent>
 
       <TabsContent value="appointments" className="border-none p-0 space-y-5">
-        <p className="text-emerald-400 text-2xl font-semibold tracking-wide">
-          All Appointments
-        </p>
+  <p className="text-emerald-400 text-2xl font-semibold tracking-wide">
+    All Appointments
+  </p>
 
-        <Card className="rounded-2xl border border-emerald-900/40 bg-[#0d1712] shadow-lg">
-          <CardContent className="p-6">
-            {appointment?.length === 0 && (
-              <p className="text-muted-foreground">No appointments found.</p>
-            )}
+  <Card className="rounded-2xl border border-emerald-900/40 bg-[#0d1712] shadow-lg">
+    <CardContent className="p-6">
+      {appointment?.length === 0 && (
+        <p className="text-muted-foreground">No appointments found.</p>
+      )}
 
-            <div className="space-y-4">
-              {appointment?.map((a) => (
-                <div
-                  key={a._id}
-                  className="p-4 bg-[#122019] border border-emerald-900/40 rounded-xl hover:border-emerald-600/40 transition-all"
-                >
-                  <div className="flex justify-between">
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-white">
-                        {a.patientId?.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {a.patientId?.email}
-                      </p>
+      <div className="space-y-4">
+        {appointment?.map((a) => (
+          <div
+            key={a._id}
+            className="p-4 bg-[#122019] border border-emerald-900/40 rounded-xl hover:border-emerald-600/40 transition-all"
+          >
+            <div className="flex justify-between">
+              <div className="space-y-1">
+                <h3 className="font-semibold text-white">
+                  {a.patientId?.name}
+                </h3>
 
-                      <h4 className="font-semibold text-emerald-400 mt-2">
-                        Dr. {a.doctorId?.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {a.doctorId?.email}
-                      </p>
-                    </div>
+                <p className="text-sm text-muted-foreground">
+                  {a.patientId?.email}
+                </p>
 
-                    <Badge className="border-emerald-500 text-emerald-400">
-                      {a.status}
-                    </Badge>
-                  </div>
+                <h4 className="font-semibold text-emerald-400 mt-2">
+                  Dr. {a.doctorId?.user?.name}
+                </h4>
 
-                  <div className="h-px bg-emerald-900/20 my-3" />
+                <p className="text-sm text-muted-foreground">
+                  {a.doctorId?.user?.email}
+                </p>
+              </div>
 
-                  <p className="text-sm text-white">
-                    Date:{" "}
-                    <span className="text-emerald-400">
-                      {new Date(a.date).toLocaleDateString()}
-                    </span>
-                  </p>
-
-                  <p className="text-sm text-white">
-                    Time:{" "}
-                    <span className="text-emerald-400">{a.time}</span>
-                  </p>
-
-                  <p className="text-sm text-white mt-2">
-                    Payment:{" "}
-                    <span className="text-emerald-400">{a.paymentStatus}</span>
-                  </p>
-
-                  <p className="text-sm text-white">
-                    Amount:{" "}
-                    <span className="text-emerald-400">₹{a.amount}</span>
-                  </p>
-                </div>
-              ))}
+              <Badge className="border-emerald-500 text-emerald-400">
+                {a.status}
+              </Badge>
             </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
+
+            <div className="h-px bg-emerald-900/20 my-3" />
+
+            <p className="text-sm text-white">
+              Date:{" "}
+              <span className="text-emerald-400">
+                {new Date(a.date).toLocaleDateString()}
+              </span>
+            </p>
+
+            <p className="text-sm text-white">
+              Time:{" "}
+              <span className="text-emerald-400">{a.time}</span>
+            </p>
+
+            <p className="text-sm text-white mt-2">
+              Payment:{" "}
+              <span className="text-emerald-400">
+                {a.paymentStatus}
+              </span>
+            </p>
+
+            <p className="text-sm text-white">
+              Amount:{" "}
+              <span className="text-emerald-400">₹{a.amount}</span>
+            </p>
+          </div>
+        ))}
+      </div>
+    </CardContent>
+  </Card>
+</TabsContent>
+
     </>
   );
 }

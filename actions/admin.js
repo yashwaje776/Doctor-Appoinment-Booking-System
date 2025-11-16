@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import User from "@/models/User";
 import Doctor from "@/models/Doctor";
 import { connectDB } from "@/lib/connectDB";
+import Appointment from "@/models/Appointment";
 
 export async function checkAdmin() {
   await connectDB();
@@ -32,7 +33,7 @@ export async function getPendingDoctors() {
     verificationStatus: "PENDING",
   })
     .populate("user", "name email imageUrl")
-    .lean(); 
+    .lean();
   return pendingDoctors.map((doc) => ({
     ...doc,
     _id: doc._id.toString(),
@@ -113,8 +114,6 @@ export async function getAllPatients() {
     _id: p._id.toString(),
   }));
 }
-
-
 export async function getAllAppointments() {
   await connectDB();
 
@@ -127,18 +126,39 @@ export async function getAllAppointments() {
   }
 
   const appointments = await Appointment.find()
-    .populate("doctorId", "user")
+    .populate({
+      path: "doctorId",
+      populate: {
+        path: "user", 
+        model: "User",
+        select: "name email imageUrl",
+      },
+    })
     .populate("patientId", "name email imageUrl")
     .lean();
 
   return appointments.map((a) => ({
     ...a,
     _id: a._id.toString(),
+
     doctorId: a.doctorId
-      ? { ...a.doctorId, _id: a.doctorId._id.toString() }
+      ? {
+          ...a.doctorId,
+          _id: a.doctorId._id.toString(),
+          user: a.doctorId.user
+            ? {
+                ...a.doctorId.user,
+                _id: a.doctorId.user._id.toString(),
+              }
+            : null,
+        }
       : null,
+
     patientId: a.patientId
-      ? { ...a.patientId, _id: a.patientId._id.toString() }
+      ? {
+          ...a.patientId,
+          _id: a.patientId._id.toString(),
+        }
       : null,
   }));
 }

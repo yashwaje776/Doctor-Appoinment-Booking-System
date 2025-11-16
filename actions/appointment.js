@@ -161,7 +161,6 @@ export async function generateVideoToken(formData) {
       throw new Error("You are not authorized to join this call");
     }
 
-   
     const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60 * 2;
 
     const connectionData = JSON.stringify({
