@@ -28,8 +28,14 @@ const doctorSchema = new mongoose.Schema(
     fees: { type: Number, default: 0 },
 
     availability: {
-      start: String,
-      end: String,
+      start: {
+        type: String,
+        default: "09:00",
+      },
+      end: {
+        type: String,
+        default: "17:00",
+      },
     },
     slots_booked: {
       type: Map,
