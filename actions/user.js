@@ -5,7 +5,7 @@ import Appointment from "@/models/Appointment";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 
-export async function validUser() {
+export async function vailduser() {
   await connectDB();
 
   const { userId } = await auth();
