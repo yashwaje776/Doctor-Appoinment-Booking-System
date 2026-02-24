@@ -5,7 +5,7 @@ import Appointment from "@/models/Appointment";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 
-export async function vailduser() {
+export async function validUser() {
   await connectDB();
 
   const { userId } = await auth();
@@ -13,7 +13,8 @@ export async function vailduser() {
 
   const user = await User.findOne({ clerkUserId: userId }).lean();
 
-  if (!user || user.role !== "PATIENT") return null;
+  // Allow PATIENT and ADMIN
+  if (!user || !["PATIENT", "ADMIN"].includes(user.role)) return null;
 
   return {
     ...user,
